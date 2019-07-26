@@ -2,15 +2,41 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
 <!-- namespace 선언 -->
-<mapper namespace= "com.spring.mapper.member">
+<mapper namespace= "member">
+	
+	<resultMap type="com.crowd.funding.member.model.memberDTO" id="memberMAP">
+				<!-- property="DTO의 변수명" column="DB의 컬럼명" -->
+		<id property="mem_idx" column="mem_idx" />
+		<result property="mem_type" column="mem_type"/>
+		<result property="mem_email" column="mem_email"/>
+		<result property="mem_password" column="mem_password"/>
+		<result property="mem_name" column="mem_name"/>
+		<result property="mem_phone" column="mem_phone"/>
+		<result property="mem_birth" column="mem_birth"/>
+		<result property="mem_sex" column="mem_sex"/>
+		<result property="mem_email_cert" column="mem_email_cert"/>
+		<result property="mem_email_cert" column="mem_email_cert"/>
+		<result property="mem_register_datetime" column="mem_register_datetime"/>
+	</resultMap>
 
-	<insert id="create">
-	INSERT INTO member (
-		mem_idx
-		) VALUES (
-		NULL		
-		)
+	<insert id="join">
+		insert into member(mem_email,mem_password,mem_name,mem_phone,mem_birth,mem_sex) 
+		values(#{mem_email},#{mem_password},#{mem_name},#{mem_phone},#{mem_birth},#{mem_sex})
 	</insert>
+	
+	<select id="login" resultMap="memberMAP">
+		select * from member where mem_email = #{mem_email}
+	</select>
+	
+	<update id="keepLogin">
+		update member set session_key = #{sessionid}, session_limit=#{sessionlimit}
+		where mem_email = #{mem_email}
+	</update>
+	
+	<select id="checkSessionKey" resultMap="memberMAP">
+		select * from member where session_key = #{value}
+	</select>
 
 </mapper>
