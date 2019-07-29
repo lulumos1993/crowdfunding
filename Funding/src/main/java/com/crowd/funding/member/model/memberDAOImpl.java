@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class memberDAOImpl implements memberDAO {
-	
+
 	@Inject
 	SqlSession sql;
 
 	@Override
 	public void joinPOST(memberDTO memDTO) throws Exception {
 		System.out.println("##### memberDAO : joinPOST #####");
-		sql.insert("member.join",memDTO);
+		sql.insert("member.join", memDTO);
 	}
 
 	@Override
@@ -26,27 +26,27 @@ public class memberDAOImpl implements memberDAO {
 		System.out.println("##### memberDAO : loginPOST #####");
 		return sql.selectOne("member.login", logDTO);
 	}
-	
+
 	@Override
 	public void lastLogin(String mem_email, Date lastLogin) throws Exception {
 		System.out.println("##### memberDAO : lastLogin #####");
-		
+
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("mem_email", mem_email);
 		paramMap.put("lastLogin", lastLogin);
-		
+
 		sql.update("member.lastLogin", paramMap);
 	}
 
 	@Override
 	public void keepLogin(String mem_email, String sessionid, Date sessionlimit) throws Exception {
 		System.out.println("##### memberDAO : keepLogin #####");
-		
+
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("mem_email", mem_email);
 		paramMap.put("sessionid", sessionid);
 		paramMap.put("sessionlimit", sessionlimit);
-		
+
 		sql.update("member.keepLogin", paramMap);
 	}
 
@@ -73,11 +73,5 @@ public class memberDAOImpl implements memberDAO {
 		System.out.println("##### memberDAO : myinfoDEL #####");
 		sql.update("member.myinfo_del", mem_idx);
 	}
-	
-	
 
-	
-
-	
-	
 }

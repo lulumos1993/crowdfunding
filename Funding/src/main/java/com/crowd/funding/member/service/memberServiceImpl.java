@@ -12,7 +12,7 @@ import com.crowd.funding.member.model.memberDTO;
 
 @Service
 public class memberServiceImpl implements memberService {
-	
+
 	@Inject
 	memberDAO memDAO;
 
@@ -27,8 +27,6 @@ public class memberServiceImpl implements memberService {
 		System.out.println("##### memberService : loginPOST #####");
 		return memDAO.loginPOST(logDTO);
 	}
-	
-	
 
 	@Override
 	public void lastLogin(String mem_email, Date lastLogin) throws Exception {
@@ -40,7 +38,7 @@ public class memberServiceImpl implements memberService {
 	public void keepLogin(String mem_email, String sessionid, Date sessionlimit) throws Exception {
 		System.out.println("##### memberService : keepLogin #####");
 		memDAO.keepLogin(mem_email, sessionid, sessionlimit);
-		
+
 	}
 
 	@Override
@@ -66,11 +64,5 @@ public class memberServiceImpl implements memberService {
 		System.out.println("##### memberService : myinfoDEL #####");
 		memDAO.myinfoDEL(mem_idx);
 	}
-	
-	
-	
-	
-	
-	
 
 }
