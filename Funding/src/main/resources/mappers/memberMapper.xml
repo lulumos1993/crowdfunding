@@ -19,6 +19,7 @@
 		<result property="mem_email_cert" column="mem_email_cert"/>
 		<result property="mem_email_cert" column="mem_email_cert"/>
 		<result property="mem_register_datetime" column="mem_register_datetime"/>
+		<result property="mem_lastlogin_datetime" column="mem_lastlogin_datetime"/>
 	</resultMap>
 
 	<insert id="join">
@@ -30,6 +31,11 @@
 		select * from member where mem_email = #{mem_email}
 	</select>
 	
+	<update id="lastLogin">
+		update member set mem_lastlogin_datetime=#{lastLogin}
+		where mem_email = #{mem_email}
+	</update>
+	
 	<update id="keepLogin">
 		update member set session_key = #{sessionid}, session_limit=#{sessionlimit}
 		where mem_email = #{mem_email}
@@ -38,5 +44,22 @@
 	<select id="checkSessionKey" resultMap="memberMAP">
 		select * from member where session_key = #{value}
 	</select>
+	
+	<select id="myinfo" resultType="com.crowd.funding.member.model.memberDTO">
+		select * from member where mem_idx = #{mem_idx} 
+	</select>
+	
+	<update id="myinfo_up">
+		update member 
+			set mem_password = #{mem_password},mem_name=#{mem_name},mem_phone=#{mem_phone}
+				<!--  ,mem_zipcode=#{mem_zipcode},mem_address1=#{mem_address1},mem_address2=#{mem_address2},
+				mem_address3=#{mem_address3},mem_address4=#{mem_address4},mem_photo=#{mem_photo} -->
+			where mem_idx=#{mem_idx}	
+	</update>
+	
+	<update id="myinfo_del">
+		update member set mem_type=3 where mem_idx=#{mem_idx}	
+	</update>
+	
 
 </mapper>
