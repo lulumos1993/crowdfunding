@@ -63,7 +63,7 @@ public class memberController {
 
 	// 로그인 처리
 	@RequestMapping(value = "/loginPOST", method = RequestMethod.POST)
-	public void loginPOST(loginDTO logDTO, HttpSession http, Model model) throws Exception {
+	public void loginPOST(loginDTO logDTO, HttpSession http, Model model, HttpServletResponse response) throws Exception {
 		// login 뷰에서 받은 데이터를 memDTO에 담는다.
 		memberDTO memDTO = memService.loginPOST(logDTO);
 

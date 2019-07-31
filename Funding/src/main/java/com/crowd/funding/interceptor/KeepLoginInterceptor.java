@@ -40,14 +40,10 @@ public class KeepLoginInterceptor extends HandlerInterceptorAdapter {
 				http.setAttribute("login", memDTO);
 				http.setAttribute("mem_idx", memDTO.getMem_idx());
 				
-				/*
-				 * int idx = maService.idx(memDTO.getMem_idx());
-				 * 
-				 * if(idx=='0') { int maker_idx = maService.makeridx(memDTO.getMem_idx());
-				 * makerDTO maDTO = maService.makerinfo(maker_idx); http.setAttribute("maker",
-				 * maDTO); http.setAttribute("maker_idx", maDTO.getMaker_idx()); }else {
-				 * response.sendRedirect("/funding"); return false; }
-				 */
+				
+				if(maService.idx(memDTO.getMem_idx())!=0) {
+					http.setAttribute("maker_idx", maService.makeridx(memDTO.getMem_idx()));
+				}
 			}
 		}
 
