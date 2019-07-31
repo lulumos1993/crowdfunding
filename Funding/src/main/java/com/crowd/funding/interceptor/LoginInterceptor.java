@@ -1,5 +1,6 @@
 package com.crowd.funding.interceptor;
 
+import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.crowd.funding.maker.service.makerService;
+import com.crowd.funding.member.model.memberDTO;
+
 public class LoginInterceptor extends HandlerInterceptorAdapter {
+	
+	@Inject
+	makerService maService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -38,15 +45,20 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		HttpSession http = request.getSession();
 		ModelMap modelMap = modelAndView.getModelMap();
 		Object memDTO = modelMap.get("mem");
-		// Object chkPW = modelMap.get("chkPW");
+		int mem_idx = (int) modelMap.get("mem_idx");
+		
 
-		// System.out.println(chkPW);
 
+		
 		// httpSession에 컨트롤러에서 저장한 login을 저장
 		if (memDTO != null) {
+
 			System.out.println("#####로그인성공");
 			http.setAttribute("login", memDTO);
-
+			
+			if(maService.idx(mem_idx)!=0) {
+			http.setAttribute("maker_idx", maService.makeridx(mem_idx));
+			}
 			if (request.getParameter("useCookie") != null) {
 				System.out.println("쿠키있음");
 				// 쿠키생성 변수 : loginCookie에 session의 아이디값 보관

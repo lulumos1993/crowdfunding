@@ -80,11 +80,19 @@ public class memberController {
 				System.out.println("### 비밀번호 불일치");
 				return;
 			}
+			if(memDTO.getMem_type()==3) {
+				System.out.println("휴면계정");
+				// 내용 추가해야함 - 
+				// 1년이내 로그인 시도하면, 휴면계정 풀리도록
+				// 휴면계정 DB에 회원정보 이동.
+				return;
+			}
 			System.out.println("로그인 성공");
 		}
 
 		// login 뷰에서 받은 데이터를 memDTO에 담는다. -> mem에 저장
 		model.addAttribute("mem", memDTO);
+		model.addAttribute("mem_idx", memDTO.getMem_idx());
 
 		// 자동로그인을 선택한 경우
 		if (logDTO.isUseCookie()) {
@@ -132,33 +140,58 @@ public class memberController {
 
 	// myinfo - 수정
 	@RequestMapping(value = "/myinfo_up")
-	public String myinfoUP(@ModelAttribute memberDTO memDTO, Model model) throws Exception {
+	public String myinfoUP(@ModelAttribute memberDTO memDTO, Model model, RedirectAttributes redirect) throws Exception {
 		System.out.println("%%% 회원번호 : " + memDTO.getMem_idx() + " 수정 %%%");
 
 		// 수정 전 정보
 		memberDTO memDTOpre = memService.myinfo(memDTO.getMem_idx());
 
 		// 비밀번호 일치 확인
-		if (BCrypt.checkpw(memDTOpre.getMem_password(), memDTO.getMem_password())) {
+		if (!BCrypt.checkpw(memDTO.getMem_password(),memDTOpre.getMem_password())) {
+			System.out.println("### 수정 - 비밀번호 불일치");
+			redirect.addFlashAttribute("chkPW", "false");
+			
+			return "redirect:/user/myinfo?mem_idx=" + memDTO.getMem_idx();		
 		}
-
+		
+		System.out.println("### 비밀번호 일치 - 수정");
 		// pw암호화 : BCrypt.hashpw(암호화할 비밀번호, 암호화된 비밀번호);
 		String hashedPW = BCrypt.hashpw(memDTO.getMem_password(), BCrypt.gensalt());
 		memDTO.setMem_password(hashedPW);
 
 		memService.myinfoUP(memDTO);
+
+		
 		return "redirect:/user/myinfo?mem_idx=" + memDTO.getMem_idx();
 	}
 
 	// myinfo - 삭제
 	@RequestMapping(value = "/myinfo_del")
-	public String myinfoDEL(@RequestParam int mem_idx) throws Exception {
+	public String myinfoDEL(@RequestParam int mem_idx, @ModelAttribute memberDTO memDTO, RedirectAttributes redirect) throws Exception {
 		System.out.println("%%% 회원번호 : " + mem_idx + " 탈퇴요청 %%%");
+		
+		// 수정 전 정보
+		memberDTO memDTOpre = memService.myinfo(memDTO.getMem_idx());
+
 		// 비밀번호 일치 확인
+		if (!BCrypt.checkpw(memDTO.getMem_password(),memDTOpre.getMem_password())) {
+			System.out.println("### 탈퇴요청 - 비밀번호 불일치");
+			redirect.addFlashAttribute("chkPW", "false");
+					
+			return "redirect:/user/myinfo?mem_idx=" + memDTO.getMem_idx();		
+		}
+		System.out.println("### 비밀번호 일치 - 탈퇴");
+				
 		// 진행중인 펀딩이 있는지? 확인후 진행
 		// 참가중인 펀딩이 있는지 ? 확인후 진행
 		memService.myinfoDEL(mem_idx);
 		return "redirect:/user/logout";
 	}
+	
+	//아이디 찾기
+	//비밀번호 찾기
+	
+	
+
 
 }

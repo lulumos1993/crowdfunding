@@ -49,6 +49,7 @@
 		<!-- 로그인하지 않은 사용자가 접근하면, login뷰로 이동	-->	
 		<interceptor>
 			<mapping path="/user/myinfo" />
+			<mapping path="/maker/maker" />
 			<beans:ref bean="authInterceptor" />
 		</interceptor>
 		 
@@ -58,6 +59,8 @@
 			<mapping path="/**/" />
 			<beans:ref bean="keepLoginInterceptor" />
 		</interceptor>
+		
+
 
 	</interceptors>
 	

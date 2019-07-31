@@ -60,8 +60,8 @@
 			</tr>
 			<tr>
 				<th scope="row">주민번호</th>
-				<td><input name="mem_birth" id="mem_birth" type="number"  maxlength="6" placeholder="생년월일"> - 
-					<input name="mem_birth" id="mem_birth" type="number" maxlength="1" width="1" >XXXXXX
+				<td><input name="mem_birth" id="mem_birth" type="text"  maxlength="6" placeholder="생년월일"> - 
+					<input name="mem_sex" id="mem_sex" type="text" maxlength="1">XXXXXX
 				</td>
 			</tr>
 			<tr>

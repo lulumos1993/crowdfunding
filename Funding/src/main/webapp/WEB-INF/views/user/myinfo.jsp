@@ -18,7 +18,13 @@
 <script src="<c:url value='/webjars/jquery/3.4.1/dist/jquery.min.js' />"></script>
 <script type="text/javascript">
 $(function() {
-	
+
+	var chkPW = "${chkPW}";
+	if(chkPW==="false"){
+		alert("비밀번호 불일치. 비밀번호 확인해");
+		document.getElementById('myinfoform').mem_password.focus();
+	}
+
 	$("#btn_up").click(function() {
 		var pw = $("#mem_password").val();
 		var repw = $("#mem_repassword").val();
@@ -52,6 +58,9 @@ $(function() {
 		document.getElementById('myinfoform').action = "/funding/user/myinfo_del?mem_idx=${myinfo.mem_idx}";
 		document.getElementById('myinfoform').submit();
 	});
+
+	
+	
 });
 </script>
 <meta charset="UTF-8">

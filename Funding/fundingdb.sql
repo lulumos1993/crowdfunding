@@ -27,3 +27,29 @@ CREATE TABLE member
 desc member;
 select * from member;
 drop table member;
+
+
+CREATE TABLE maker
+(
+    `maker_idx`       INT            NOT NULL    AUTO_INCREMENT COMMENT '메이커 id', 
+    `maker_name`      VARCHAR(45)    NULL        COMMENT '이름', 
+    `maker_phone`     VARCHAR(45)    NULL        COMMENT '전화번호', 
+    `maker_zipcode`   INT    		 NULL        COMMENT '우편번호', 
+    `maker_address1`  VARCHAR(45)    NULL        COMMENT '도로명주소', 
+    `maker_address2`  VARCHAR(45)    NULL        COMMENT '지번주소', 
+    `maker_address3`  VARCHAR(45)    NULL        COMMENT '상세주소', 
+    `maker_address4`  VARCHAR(45)    NULL        COMMENT '참고항목', 
+    `maker_intro`     VARCHAR(45)    NULL        COMMENT '메이커 소개', 
+    `maker_photo`     VARCHAR(45)    NULL        COMMENT '메이커 이미지 경로', 
+    `mem_idx`         INT            NULL        COMMENT '메이커의 개인정보 pk', 
+    PRIMARY KEY (maker_idx)
+);
+
+drop table maker;
+delete from maker;
+sele
+
+ALTER TABLE maker
+    ADD CONSTRAINT FK_Maker_mem_idx_member_mem_idx FOREIGN KEY (mem_idx)
+        REFERENCES member (mem_idx) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
