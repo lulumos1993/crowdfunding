@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
@@ -63,7 +64,7 @@ public class memberController {
 
 	// 로그인 처리
 	@RequestMapping(value = "/loginPOST", method = RequestMethod.POST)
-	public void loginPOST(loginDTO logDTO, HttpSession http, Model model, HttpServletResponse response) throws Exception {
+	public void loginPOST(loginDTO logDTO, HttpSession http, Model model) throws Exception {
 		// login 뷰에서 받은 데이터를 memDTO에 담는다.
 		memberDTO memDTO = memService.loginPOST(logDTO);
 
@@ -92,7 +93,6 @@ public class memberController {
 
 		// login 뷰에서 받은 데이터를 memDTO에 담는다. -> mem에 저장
 		model.addAttribute("mem", memDTO);
-		model.addAttribute("mem_idx", memDTO.getMem_idx());
 
 		// 자동로그인을 선택한 경우
 		if (logDTO.isUseCookie()) {

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -43,21 +44,19 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		System.out.println(request.getRequestURI());
 
 		HttpSession http = request.getSession();
+		
+		//모델에 담긴 모든 데이터를 가져옴
 		ModelMap modelMap = modelAndView.getModelMap();
-		Object memDTO = modelMap.get("mem");
-		int mem_idx = (int) modelMap.get("mem_idx");
-		
+		memberDTO memDTO = (memberDTO)modelMap.get("mem");
 
-
-		
 		// httpSession에 컨트롤러에서 저장한 login을 저장
 		if (memDTO != null) {
 
 			System.out.println("#####로그인성공");
 			http.setAttribute("login", memDTO);
 			
-			if(maService.idx(mem_idx)!=0) {
-			http.setAttribute("maker_idx", maService.makeridx(mem_idx));
+			if(maService.idx(memDTO.getMem_idx())!=0) {
+				http.setAttribute("maker_idx", maService.makeridx(memDTO.getMem_idx()));
 			}
 			if (request.getParameter("useCookie") != null) {
 				System.out.println("쿠키있음");

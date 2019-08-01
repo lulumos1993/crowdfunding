@@ -42,7 +42,6 @@
 		<interceptor>
 			 <mapping path="/user/login" />
 			 <mapping path="/user/join" />
-
 			<beans:ref bean="loginAfterInterceptor" />
 		</interceptor>
 		

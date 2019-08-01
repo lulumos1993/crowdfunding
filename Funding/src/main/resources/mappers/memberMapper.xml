@@ -17,7 +17,6 @@
 		<result property="mem_birth" column="mem_birth"/>
 		<result property="mem_sex" column="mem_sex"/>
 		<result property="mem_email_cert" column="mem_email_cert"/>
-		<result property="mem_email_cert" column="mem_email_cert"/>
 		<result property="mem_register_datetime" column="mem_register_datetime"/>
 		<result property="mem_lastlogin_datetime" column="mem_lastlogin_datetime"/>
 	</resultMap>

@@ -47,7 +47,7 @@ CREATE TABLE maker
 
 drop table maker;
 delete from maker;
-sele
+
 
 ALTER TABLE maker
     ADD CONSTRAINT FK_Maker_mem_idx_member_mem_idx FOREIGN KEY (mem_idx)
