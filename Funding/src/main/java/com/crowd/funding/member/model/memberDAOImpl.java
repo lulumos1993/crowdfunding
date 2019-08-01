@@ -19,12 +19,35 @@ public class memberDAOImpl implements memberDAO {
 	public void joinPOST(memberDTO memDTO) throws Exception {
 		System.out.println("##### memberDAO : joinPOST #####");
 		sql.insert("member.join", memDTO);
+		//sql.insert("member.join_email", parameter);
 	}
 
 	@Override
 	public memberDTO loginPOST(loginDTO logDTO) throws Exception {
 		System.out.println("##### memberDAO : loginPOST #####");
 		return sql.selectOne("member.login", logDTO);
+	}
+	
+	
+
+	@Override
+	public void creatKey(String mem_email, String email_key) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mem_email", mem_email);
+		map.put("email_key", email_key);
+		
+		sql.selectOne("member.join_email", map);
+	}
+	
+	
+
+	@Override
+	public void emailAuth(String mem_email, String email_key) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mem_email", mem_email);
+		map.put("email_key", email_key);
+		sql.update("member.auth_email", map);
+		
 	}
 
 	@Override

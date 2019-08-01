@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
+import com.crowd.funding.member.MailHandler;
+import com.crowd.funding.member.model.emailDTO;
 import com.crowd.funding.member.model.loginDTO;
 import com.crowd.funding.member.model.memberDTO;
 import com.crowd.funding.member.service.memberService;
@@ -30,6 +33,7 @@ public class memberController {
 	@Inject
 	protected memberService memService;
 
+
 	// 회원가입 페이지로 이동
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public String joinGET() throws Exception {
@@ -38,7 +42,7 @@ public class memberController {
 
 	// 회원가입 처리
 	@RequestMapping(value = "/joinPOST", method = RequestMethod.POST)
-	public String joinPOST(memberDTO memDTO, RedirectAttributes redirect) throws Exception {
+	public String joinPOST(memberDTO memDTO, emailDTO emailDTO, RedirectAttributes redirect) throws Exception {
 
 		// pw암호화 : BCrypt.hashpw(암호화할 비밀번호, 암호화된 비밀번호);
 		String hashedPW = BCrypt.hashpw(memDTO.getMem_password(), BCrypt.gensalt());
@@ -49,6 +53,21 @@ public class memberController {
 
 		return "redirect:/user/login";
 	}
+	
+	@RequestMapping(value = "/emailConfirm", method = RequestMethod.GET)
+	public String emailConfirm(@RequestParam String mem_email, @RequestParam String email_key, Model model) throws Exception{
+		System.out.println("--------------- controller emailConfirm() : 이메일 인증 확인");
+		System.out.println(mem_email + " / " + email_key);
+			
+		memService.emailAuth(mem_email,email_key);
+		model.addAttribute("mem_email", mem_email);
+		
+		return "/user/emailConfirm";
+	}
+	
+	
+	
+	
 
 	// 로그인 페이지로 이동
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -77,8 +96,9 @@ public class memberController {
 			System.out.println("### 아이디가 DB에 없다.");
 			return;
 		} else if (memDTO != null) {
-			if (!BCrypt.checkpw(logDTO.getMem_password(), memDTO.getMem_password())) {
-				System.out.println("### 비밀번호 불일치");
+			if(memDTO.getMem_email_cert()==0) {
+				System.out.println("이메일 미인증");
+				//내용추가해야함
 				return;
 			}
 			if(memDTO.getMem_type()==3) {
@@ -88,6 +108,11 @@ public class memberController {
 				// 휴면계정 DB에 회원정보 이동.
 				return;
 			}
+			if (!BCrypt.checkpw(logDTO.getMem_password(), memDTO.getMem_password())) {
+				System.out.println("### 비밀번호 불일치");
+				return;
+			}			
+			
 			System.out.println("로그인 성공");
 		}
 

@@ -46,4 +46,28 @@
 	<!-- mybatis mapper interface bean을 자동으로 검색하여 생성함 -->
 	<!-- <mybatis-spring:scan base-package="com.example.spring01.model.memo" 
 		/> -->
+		
+		
+		
+		
+	<!-- email -->	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="lulumos1993@gmail.com" />
+		<property name="password" value="wjd1211*0207" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transprot.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
 </beans>

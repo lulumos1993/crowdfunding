@@ -69,7 +69,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 				// 브라우저 종료 후, 해당 페이지를 쿠키가 유지되는 5분이내에 접속하면 로그인이 유지되어 있다.?
 			}
 		} else if (memDTO == null) {
-			System.out.println("#####로그인 실패 : 아이디 없음 ");
+			System.out.println("#####로그인 실패 ");
 		}
 
 		// 이전에 하던 페이지로 이동, or home으로 이동

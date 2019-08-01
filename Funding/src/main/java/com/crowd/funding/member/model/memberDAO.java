@@ -7,6 +7,11 @@ public interface memberDAO {
 	void joinPOST(memberDTO memDTO) throws Exception;
 
 	memberDTO loginPOST(loginDTO logDTO) throws Exception;
+	
+	//이메일 인증키 db에 저장
+	void creatKey(String mem_email, String email_key) throws Exception;
+	//인증 완료 - mem_email_cert=1 로 update
+	void emailAuth(String mem_email, String email_key) throws Exception;
 
 	// 마지막 로그인 시간 저장
 	void lastLogin(String mem_email, Date lastLogin) throws Exception;

@@ -19,7 +19,7 @@
 <script type="text/javascript">
 	var msg = "${msg}";
 	if(msg==="registered"){
-		alert("회원가입 완료! 로그인해주세요.");
+		alert("가입축하! 이메일로 인증해");
 	}
 
 	$(document).ready(function() {

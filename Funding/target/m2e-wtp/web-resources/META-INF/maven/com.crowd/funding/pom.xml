@@ -92,10 +92,19 @@
 		</dependency>
 
 		<!-- email 인증 -->
+		<!-- com.sun.mail : smtp, imap 및 pop3프로토콜 제공자를 포함하는 javamail참조 구현 jar파일을 	포함 -->
+		<!-- javax.mail : contains only interface / 더이상 구현에 사용하지 않는다. -->
+		<!-- javax.mail-api : contains implements / java.mail-api.jar파일을 제공한다. -->
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<artifactId>spring-context-support</artifactId>
 			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>

@@ -4,8 +4,11 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.crowd.funding.member.MailHandler;
+import com.crowd.funding.member.TempKey;
 import com.crowd.funding.member.model.loginDTO;
 import com.crowd.funding.member.model.memberDAO;
 import com.crowd.funding.member.model.memberDTO;
@@ -15,18 +18,45 @@ public class memberServiceImpl implements memberService {
 
 	@Inject
 	memberDAO memDAO;
+	@Inject
+	private JavaMailSender mailSender;
 
 	@Override
 	public void joinPOST(memberDTO memDTO) throws Exception {
 		System.out.println("##### memberService : joinPOST #####");
 		memDAO.joinPOST(memDTO);
+		
+		//인증키 생성
+		String email_key = new TempKey().getKey(50, false);
+		memDAO.creatKey(memDTO.getMem_email(), email_key);
+		
+		//eamil 발송
+		MailHandler sendMail = new MailHandler(mailSender);
+			sendMail.setSubject("[이메일 인증]");
+			sendMail.setText(new StringBuffer().append("<h1>메일인증</h1>")
+						.append("<a href='http://localhost:8080/funding/user/emailConfirm?mem_email="+memDTO.getMem_email())
+						.append("&email_key="+ email_key + "' target='_blank'>이메일 인증</a>").toString());
+			sendMail.setFrom("lulumos1993@gmail.com", "페퍼민트");
+			sendMail.setTo(memDTO.getMem_email());
+			sendMail.send();
+				
+				System.out.println("----------------email_key : " + email_key);
+	}
+
+
+	@Override
+	public void emailAuth(String mem_email, String email_key) throws Exception {
+		memDAO.emailAuth(mem_email,email_key);
+		
 	}
 
 	@Override
 	public memberDTO loginPOST(loginDTO logDTO) throws Exception {
 		System.out.println("##### memberService : loginPOST #####");
+		
 		return memDAO.loginPOST(logDTO);
 	}
+	
 
 	@Override
 	public void lastLogin(String mem_email, Date lastLogin) throws Exception {

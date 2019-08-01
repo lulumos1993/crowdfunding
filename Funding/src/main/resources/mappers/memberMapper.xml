@@ -25,6 +25,17 @@
 		insert into member(mem_email,mem_password,mem_name,mem_phone,mem_birth,mem_sex) 
 		values(#{mem_email},#{mem_password},#{mem_name},#{mem_phone},#{mem_birth},#{mem_sex})
 	</insert>
+	<insert id="join_email">
+		insert into member_auth(mem_email,email_key, email_type)
+			values(#{mem_email},#{email_key},"1")
+	</insert>
+	<update id="auth_email">
+		update member a, member_auth b
+ 				set a.mem_email_cert=1
+ 				where a.mem_email=b.mem_email
+ 						and b.email_key=#{email_key}
+ 						and b.mem_email=#{mem_email}
+	</update>
 	
 	<select id="login" resultMap="memberMAP">
 		select * from member where mem_email = #{mem_email}
