@@ -61,7 +61,7 @@ CREATE TABLE member_auth
     `email_idx`   INT            NOT NULL    AUTO_INCREMENT COMMENT 'PK', 
     `mem_email`   VARCHAR(45)    NULL        COMMENT '이메일 인증이 필요한 회원 아이디겸이메일', 
     `email_key`   VARCHAR(150)    NULL        COMMENT '이메일 인증키', 
-    `email_type`  TINYINT        NULL        COMMENT '인증종류 1: 회원가입, 2: 이메일변경, 3: 패스워드 분실', 
+    `email_type`  TINYINT        NULL        COMMENT '인증종류 1: 회원가입, 2: 이메일변경, 3: 패스워드 재설정', 
     PRIMARY KEY (email_idx)
 );
 

@@ -36,6 +36,16 @@
  						and b.email_key=#{email_key}
  						and b.mem_email=#{mem_email}
 	</update>
+	<update id="keyTOexpired">
+		update member_auth
+			set email_key='expired'
+			where mem_email=#{mem_email} and email_key!='expired'
+	</update>
+	<select id="chkexpired" resultType="int">
+		select count(*) from member_auth 
+			where mem_email=#{mem_email} and email_key!='expired' and email_type =#{email_type}
+	</select>
+	
 	
 	<select id="login" resultMap="memberMAP">
 		select * from member where mem_email = #{mem_email}
@@ -71,5 +81,21 @@
 		update member set mem_type=3 where mem_idx=#{mem_idx}	
 	</update>
 	
+	
+	<select id="userfindID" resultType="int">
+		select count(*) from member where mem_email=#{find}
+	</select>
+	
+	<insert id="emailpw">
+		insert into member_auth(mem_email,email_key, email_type)
+			values(#{find},#{email_key},"3")
+	</insert>
+	<update id="resetPW">
+		update member a, member_auth b
+ 				set a.mem_password=#{mem_password}
+ 				where a.mem_email=b.mem_email
+ 						and b.email_key=#{email_key}
+ 						and b.mem_email=#{mem_email}
+	</update>
 
 </mapper>

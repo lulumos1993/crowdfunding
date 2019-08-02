@@ -45,6 +45,13 @@ public class memberServiceImpl implements memberService {
 
 
 	@Override
+	public int chkKey(String mem_email,int email_type) throws Exception {
+		
+		return memDAO.chkKey(mem_email, email_type);
+	}
+
+
+	@Override
 	public void emailAuth(String mem_email, String email_key) throws Exception {
 		memDAO.emailAuth(mem_email,email_key);
 		
@@ -94,5 +101,46 @@ public class memberServiceImpl implements memberService {
 		System.out.println("##### memberService : myinfoDEL #####");
 		memDAO.myinfoDEL(mem_idx);
 	}
+
+
+	@Override
+	public int userfindID(String find) throws Exception {
+		System.out.println("##### memberService : userfindID #####");
+		return memDAO.userfindID(find);
+	}
+
+
+	@Override
+	public void userfindPW(String find) throws Exception {
+		
+		//인증키 생성
+		String email_key = new TempKey().getKey(50, false);
+		memDAO.userfindPW(find,email_key);
+				
+		//eamil 발송
+		MailHandler sendMail = new MailHandler(mailSender);
+			sendMail.setSubject("[비밀번호 재설정 안내]");
+			sendMail.setText(new StringBuffer().append("<h1>비밀번호 변경</h1>")
+					.append("<a href='http://localhost:8080/funding/user/resetpw?mem_email="+find)
+					.append("&email_key="+ email_key + "' target='_blank'>비밀번호 변경</a>").toString());
+			sendMail.setFrom("lulumos1993@gmail.com", "페퍼민트");
+			sendMail.setTo(find);
+			sendMail.send();
+			
+			System.out.println("메일발송 완료");
+							
+	}
+
+
+	@Override
+	public void resetPW(String mem_password, String mem_email, String email_key) throws Exception {
+		memDAO.resetPW(mem_password, mem_email, email_key);	
+	}
+	
+	
+	
+	
+	
+	
 
 }

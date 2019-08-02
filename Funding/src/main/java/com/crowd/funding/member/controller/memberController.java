@@ -42,7 +42,7 @@ public class memberController {
 
 	// 회원가입 처리
 	@RequestMapping(value = "/joinPOST", method = RequestMethod.POST)
-	public String joinPOST(memberDTO memDTO, emailDTO emailDTO, RedirectAttributes redirect) throws Exception {
+	public String joinPOST(memberDTO memDTO, RedirectAttributes redirect) throws Exception {
 
 		// pw암호화 : BCrypt.hashpw(암호화할 비밀번호, 암호화된 비밀번호);
 		String hashedPW = BCrypt.hashpw(memDTO.getMem_password(), BCrypt.gensalt());
@@ -58,15 +58,22 @@ public class memberController {
 	public String emailConfirm(@RequestParam String mem_email, @RequestParam String email_key, Model model) throws Exception{
 		System.out.println("--------------- controller emailConfirm() : 이메일 인증 확인");
 		System.out.println(mem_email + " / " + email_key);
-			
+		
+		// 1: 회원가입
+		int email_type = 1;
+		int key = memService.chkKey(mem_email, email_type);
+		
+		if(key==0) {
+			model.addAttribute("expired", key);
+		}	
+		
+		System.out.println("*****"+key);
+
 		memService.emailAuth(mem_email,email_key);
 		model.addAttribute("mem_email", mem_email);
-		
-		return "/user/emailConfirm";
+
+		return "user/confirm";
 	}
-	
-	
-	
 	
 
 	// 로그인 페이지로 이동
@@ -75,7 +82,7 @@ public class memberController {
 		return "user/login";
 	}
 
-	// 로그인 페이지로 이동
+	// 로그인 페이지로 이동....?
 	@RequestMapping(value = "/loginPOST", method = RequestMethod.GET)
 	public String loginPOST() throws Exception {
 		return "user/loginPOST";
@@ -213,8 +220,73 @@ public class memberController {
 		return "redirect:/user/logout";
 	}
 	
+	
+	@RequestMapping(value = "/userfind", method = RequestMethod.GET)
+	public String userfindGET() throws Exception{
+		return "user/userfind";
+	}
+	
 	//아이디 찾기
-	//비밀번호 찾기
+	@RequestMapping(value = "/userfind_id", method = RequestMethod.POST)
+	public String userfindID(@RequestParam String find, Model model) throws Exception{
+		
+		model.addAttribute("find", find);
+		
+		int chk = memService.userfindID(find);
+				
+		if(chk==0) {
+			//System.out.println("아이디 없음");
+			model.addAttribute("msg", "0");
+		}else if(chk==1){
+			//System.out.println("아이디 있음");
+			model.addAttribute("msg", "1");
+		}
+		
+		return "user/userfind";
+	}
+	
+	//비밀번호 변경 이메일 발송
+	@RequestMapping(value = "/userfind_pw", method = RequestMethod.POST)
+	public String userfindPW(@RequestParam String findpw, Model model) throws Exception{
+		
+		memService.userfindPW(findpw);
+		model.addAttribute("msg", "email");
+		model.addAttribute("find", findpw);
+			
+		return "user/userfind";
+	}
+	
+	@RequestMapping(value = "/resetpw", method = RequestMethod.GET)
+	public String resetPW(@RequestParam String mem_email, @RequestParam String email_key, Model model) throws Exception{
+		System.out.println("--------------- controller resetpw() : 비밀번호 재설정");
+		System.out.println(mem_email + " / " + email_key);
+		
+		//만료된 링크 확인 , 3: 비밀번호 분실
+		int email_type = 3;
+		int key = memService.chkKey(mem_email, email_type);
+		
+		if(key==0) {
+			model.addAttribute("expired", "expired");
+		}		
+			//System.out.println("*****"+key);
+		model.addAttribute("email_key", email_key);
+		model.addAttribute("mem_email", mem_email);
+
+		return "user/resetPW";
+	}
+	
+	@RequestMapping(value = "/resetpw", method = RequestMethod.POST)
+	public String resetPW(@RequestParam String mem_password, @RequestParam String email_key, @RequestParam String mem_email) throws Exception{
+		System.out.println("--------------- controller resetpw() : 비밀번호 재설정");
+		System.out.println(mem_password + " / " + email_key+ " / " + mem_email);
+		
+		//비밀번호 암호화
+		String hashedPW = BCrypt.hashpw(mem_password, BCrypt.gensalt());
+		System.out.println(hashedPW);
+		memService.resetPW(hashedPW, mem_email, email_key);
+
+		return "user/login";
+	}
 	
 	
 

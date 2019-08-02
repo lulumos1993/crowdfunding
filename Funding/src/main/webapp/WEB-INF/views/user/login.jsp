@@ -8,7 +8,7 @@
 <head>
 <style type="text/css">
 .table_view {
-	width: 200px;
+	width: 300px;
 	margin: 0 auto;
 }
 .table_view tfoot {
@@ -63,6 +63,9 @@
 	<tr>
 		<th colspan="2"><input type="checkbox" name="useCookie" id="useCookie"> 자동로그인 </th>
 	</tr>
+	<tr>
+		<th colspan="2"><a href="<c:url value='/user/userfind' />" >아이디 비밀번호 찾기</a></th>
+	<td>
 	</table>
 </form>
 

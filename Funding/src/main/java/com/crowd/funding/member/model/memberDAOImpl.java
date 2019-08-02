@@ -46,8 +46,19 @@ public class memberDAOImpl implements memberDAO {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("mem_email", mem_email);
 		map.put("email_key", email_key);
-		sql.update("member.auth_email", map);
 		
+		sql.update("member.auth_email", map);
+		sql.update("member.keyTOexpired", mem_email);
+	}
+	
+	
+
+	@Override
+	public int chkKey(String mem_email, int email_type) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		map.put("mem_email", mem_email);
+		map.put("email_type", email_type);
+		return sql.selectOne("member.chkexpired", map);
 	}
 
 	@Override
@@ -96,5 +107,35 @@ public class memberDAOImpl implements memberDAO {
 		System.out.println("##### memberDAO : myinfoDEL #####");
 		sql.update("member.myinfo_del", mem_idx);
 	}
+
+	@Override
+	public int userfindID(String find) throws Exception {
+		System.out.println("##### memberDAO : userfindID #####");
+		return sql.selectOne("member.userfindID", find);
+	}
+
+	@Override
+	public void userfindPW(String find, String email_key) throws Exception {
+		System.out.println("##### memberDAO : resetPW #####");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("find", find);
+		map.put("email_key", email_key);
+		sql.insert("member.emailpw", map);
+	}
+	
+	@Override
+	public void resetPW(String mem_password, String mem_email, String email_key) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("mem_email", mem_email);
+		map.put("email_key", email_key);
+		map.put("mem_password", mem_password);
+		
+		sql.update("member.resetPW", map);
+		sql.update("member.keyTOexpired", mem_email);
+	}
+	
+	
+	
+	
 
 }
