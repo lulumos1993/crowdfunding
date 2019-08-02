@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.sql.DataSource;
+import javax.activation.DataSource;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -40,7 +40,7 @@ public class MailHandler {
 		messageHelper.setTo(email);
 	}
 
-	public void addInline(String contentId, javax.activation.DataSource dataSource) throws MessagingException {
+	public void addInline(String contentId, DataSource dataSource) throws MessagingException {
 		messageHelper.addInline(contentId, dataSource);
 	}
 	
