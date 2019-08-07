@@ -7,6 +7,10 @@ import com.crowd.funding.member.model.loginDTO;
 import com.crowd.funding.member.model.memberDTO;
 
 public interface memberService {
+	
+	//sns
+		memberDTO snsLogin(memberDTO mem) throws Exception;
+		void snsjoinPOST(memberDTO memDTO) throws Exception;
 
 	void joinPOST(memberDTO memDTO) throws Exception;
 

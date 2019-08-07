@@ -20,6 +20,14 @@
 		<result property="mem_register_datetime" column="mem_register_datetime"/>
 		<result property="mem_lastlogin_datetime" column="mem_lastlogin_datetime"/>
 	</resultMap>
+	
+	<insert id="snsjoin">  
+		insert into member(mem_email,mem_password,mem_name,mem_phone,mem_birth,mem_sex,mem_type,naver_idx,mem_email_cert) 
+		values(#{mem_email},#{mem_password},#{mem_name},#{mem_phone},#{mem_birth},#{mem_sex},'4',#{naver_idx},'1')
+	</insert>
+	<select id="snsLogin" resultType="com.crowd.funding.member.model.memberDTO">
+		select * from member where naver_idx = #{naver_idx}
+	</select>
 
 	<insert id="join">
 		insert into member(mem_email,mem_password,mem_name,mem_phone,mem_birth,mem_sex) 
@@ -45,7 +53,6 @@
 		select count(*) from member_auth 
 			where mem_email=#{mem_email} and email_key!='expired' and email_type =#{email_type}
 	</select>
-	
 	
 	<select id="login" resultMap="memberMAP">
 		select * from member where mem_email = #{mem_email}
@@ -97,5 +104,7 @@
  						and b.email_key=#{email_key}
  						and b.mem_email=#{mem_email}
 	</update>
+	
+	
 
 </mapper>

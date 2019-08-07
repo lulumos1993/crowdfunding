@@ -14,7 +14,7 @@
 </h1>
 
 <P>  The time on the server is ${serverTime}. </P>
-
+<br>
 	<c:if test="${not empty login}">
 <p>${login.mem_name }님  로그인했음</p>
 	<a href="<c:url value='/user/logout'/>" >로그아웃</a><br>

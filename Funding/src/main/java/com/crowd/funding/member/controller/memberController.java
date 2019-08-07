@@ -1,5 +1,6 @@
 package com.crowd.funding.member.controller;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -8,23 +9,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
-import com.crowd.funding.member.MailHandler;
-import com.crowd.funding.member.model.emailDTO;
+import com.crowd.funding.member.SNSLogin;
+import com.crowd.funding.member.SNSvalue;
 import com.crowd.funding.member.model.loginDTO;
 import com.crowd.funding.member.model.memberDTO;
 import com.crowd.funding.member.service.memberService;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -32,6 +34,8 @@ public class memberController {
 
 	@Inject
 	protected memberService memService;
+	@Inject
+	private SNSvalue naverSNS;
 
 
 	// 회원가입 페이지로 이동
@@ -39,7 +43,6 @@ public class memberController {
 	public String joinGET() throws Exception {
 		return "user/user_join";
 	}
-
 	// 회원가입 처리
 	@RequestMapping(value = "/joinPOST", method = RequestMethod.POST)
 	public String joinPOST(memberDTO memDTO, RedirectAttributes redirect) throws Exception {
@@ -53,6 +56,25 @@ public class memberController {
 
 		return "redirect:/user/login";
 	}
+	
+	// sns회원가입 페이지로 이동
+		@RequestMapping(value = "/snsjoin", method = RequestMethod.GET)
+		public String snsjoinGET() throws Exception {
+			return "user/user_snsjoin";
+		}
+	// sns회원가입 처리
+		@RequestMapping(value = "/snsjoinPOST", method = RequestMethod.POST)
+		public String snsjoinPOST(memberDTO memDTO, RedirectAttributes redirect) throws Exception {
+
+			// pw암호화 : BCrypt.hashpw(암호화할 비밀번호, 암호화된 비밀번호);
+			String hashedPW = BCrypt.hashpw(memDTO.getMem_password(), BCrypt.gensalt());
+			memDTO.setMem_password(hashedPW);
+
+			memService.snsjoinPOST(memDTO);
+			redirect.addFlashAttribute("msg", "sns");
+
+			return "redirect:/user/login";
+		}
 	
 	@RequestMapping(value = "/emailConfirm", method = RequestMethod.GET)
 	public String emailConfirm(@RequestParam String mem_email, @RequestParam String email_key, Model model) throws Exception{
@@ -76,19 +98,56 @@ public class memberController {
 	}
 	
 
+		
 	// 로그인 페이지로 이동
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginGET() throws Exception {
+	public String loginGET(Model model, HttpSession session) throws IOException {
+		
+		//네이버 로그인에 필요한 url생성
+		SNSLogin naverLogin = new SNSLogin(naverSNS);
+		model.addAttribute("naverURL", naverLogin.getNaverAuthURL());
+		
 		return "user/login";
 	}
-
-	// 로그인 페이지로 이동....?
-	@RequestMapping(value = "/loginPOST", method = RequestMethod.GET)
-	public String loginPOST() throws Exception {
-		return "user/loginPOST";
+	
+	@RequestMapping(value = "/navercallback")
+	public void callbackNAVER(@RequestParam String code, Model model , HttpSession session) throws Exception{
+		
+		// 1. code를 이용해서 access_token 받기
+		// 2. access_token을 이용해서 사용자 profile 정보 가져오기
+		SNSLogin snsLogin = new SNSLogin(naverSNS);
+				
+		memberDTO snsUser = snsLogin.getUserProfile(code);
+		System.out.println("Profile>>" + snsUser);
+		model.addAttribute("snsUser", snsUser);
+	
+		// 3. DB 해당 유저가 존재하는 체크 
+		memberDTO mem = memService.snsLogin(snsUser);
+		
+		
+		if(mem==null) {
+			//회원가입 x sns유저
+			model.addAttribute("msg", "0");
+			return;
+		}else {
+			if(mem.getMem_type()==3) {
+				System.out.println("휴면계정");
+				model.addAttribute("msg", "3");
+				// 내용 추가해야함 - 
+				// 1년이내 로그인 시도하면, 휴면계정 풀리도록?
+				// 휴면계정 DB에 회원정보 이동.??
+				return;
+			}
+			
+			System.out.println("sns 로그인 성공");
+			// 4. 존재시 강제로그인
+			model.addAttribute("mem", mem);
+			model.addAttribute("msg", "1");
+			
+		}
+			
 	}
 
-	// 로그인 처리
 	@RequestMapping(value = "/loginPOST", method = RequestMethod.POST)
 	public void loginPOST(loginDTO logDTO, HttpSession http, Model model) throws Exception {
 		// login 뷰에서 받은 데이터를 memDTO에 담는다.
@@ -101,24 +160,27 @@ public class memberController {
 		// 아이디가 없거나, 비밀번호가 불일치 하면 메서드 종료
 		if (memDTO == null) {
 			System.out.println("### 아이디가 DB에 없다.");
+			model.addAttribute("msg", "id");
 			return;
 		} else if (memDTO != null) {
-			if(memDTO.getMem_email_cert()==0) {
-				System.out.println("이메일 미인증");
-				//내용추가해야함
+			if (!BCrypt.checkpw(logDTO.getMem_password(), memDTO.getMem_password())) {
+				System.out.println("### 비밀번호 불일치");
+				model.addAttribute("msg", "pw");
 				return;
 			}
 			if(memDTO.getMem_type()==3) {
 				System.out.println("휴면계정");
+				model.addAttribute("msg", "3");
 				// 내용 추가해야함 - 
-				// 1년이내 로그인 시도하면, 휴면계정 풀리도록
-				// 휴면계정 DB에 회원정보 이동.
+				// 1년이내 로그인 시도하면, 휴면계정 풀리도록?
+				// 휴면계정 DB에 회원정보 이동.??
 				return;
 			}
-			if (!BCrypt.checkpw(logDTO.getMem_password(), memDTO.getMem_password())) {
-				System.out.println("### 비밀번호 불일치");
+			if(memDTO.getMem_email_cert()==0) {
+				System.out.println("이메일 미인증");
+				model.addAttribute("msg", "email");
 				return;
-			}			
+			}				
 			
 			System.out.println("로그인 성공");
 		}
@@ -138,6 +200,13 @@ public class memberController {
 		memService.lastLogin(memDTO.getMem_email(), new Date());
 
 	}
+	
+	@RequestMapping(value = "/loginCK", method = RequestMethod.GET) 
+	public String loginPOST() throws Exception { 
+		  return "user/loginPOST"; 
+	}
+	
+	
 
 	// 로그아웃 처리
 	@RequestMapping(value = "/logout")
@@ -161,6 +230,8 @@ public class memberController {
 
 		return "/user/logout";
 	}
+	
+
 
 	// myinfo페이지 이동
 	@RequestMapping(value = "/myinfo")

@@ -1,7 +1,7 @@
 CREATE TABLE member
 (
     `mem_idx`                 INT             NOT NULL    AUTO_INCREMENT COMMENT 'PK(고유번호)',
-    `mem_type`                INT             NULL  default 0      COMMENT '회원타입(0:일반 / 1:메이커 / 2: 관리자 / 3: 탈퇴요청)', 
+    `mem_type`                INT             NULL  default 0      COMMENT '회원타입(0:일반 / 1:메이커 / 2: 관리자 / 3: 탈퇴요청 / 4:naver회원)', 
     `mem_email`               VARCHAR(45)     NULL        COMMENT '회원 이메일 겸 아이디', 
     `mem_password`            VARCHAR(150)    NULL        COMMENT '회원 패스워드', 
     `mem_name`                VARCHAR(45)     NULL        COMMENT '회원 이름(회원이름추가-현재)', 
@@ -21,12 +21,16 @@ CREATE TABLE member
     
     `session_key`             VARCHAR(50)     NULL   default 'none'     COMMENT 'session 아이디 보관', 
     `session_limit`           DATETIME       NULL        COMMENT '자동로그인 유효시간 기록', 
+    
+    'naver_idx'				  VARCHAR(50)     NULL        COMMENT '네이버로그인을 위한 idx', 
     PRIMARY KEY (mem_idx)
 );
 
 desc member;
 select * from member;
 drop table member;
+
+alter table member add naver_idx varchar(50) null COMMENT '네이버로그인을 위한 idx';
 
 
 CREATE TABLE maker

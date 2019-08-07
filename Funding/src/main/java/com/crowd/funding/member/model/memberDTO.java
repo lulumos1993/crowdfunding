@@ -25,6 +25,20 @@ public class memberDTO {
 	private String mem_address3;
 	private String mem_address4;
 	private String mem_photo; // 기본이미지 default로 추가해주기
+	
+	private String naver_idx;
+	
+	
+
+
+
+	public String getNaver_idx() {
+		return naver_idx;
+	}
+
+	public void setNaver_idx(String naver_idx) {
+		this.naver_idx = naver_idx;
+	}
 
 	public int getMem_idx() {
 		return mem_idx;

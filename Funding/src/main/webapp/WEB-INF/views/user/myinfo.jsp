@@ -74,8 +74,7 @@ $(function() {
 			<caption>회원가입</caption>
 			<tr>
 				<th scope="row">이메일 및 아이디</th>
-				<td><input name="mem_email" id="mem_email" type="text" placeholder="이메일 및 아이디" value="${myinfo.mem_email }" readonly="readonly" > 
-					<input type="button" name="chk_email" id="chk_email" value="이메일인증"> </td>
+				<td><input name="mem_email" id="mem_email" type="text" placeholder="이메일 및 아이디" value="${myinfo.mem_email }" readonly="readonly" > </td>
 			</tr>
 			<tr>
 				<th scope="row">비밀번호</th>

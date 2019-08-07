@@ -3,6 +3,10 @@ package com.crowd.funding.member.model;
 import java.util.Date;
 
 public interface memberDAO {
+	
+	//sns
+		memberDTO snsLogin(memberDTO mem) throws Exception;
+		void snsjoinPOST(memberDTO memDTO) throws Exception;
 
 	void joinPOST(memberDTO memDTO) throws Exception;
 
@@ -16,8 +20,8 @@ public interface memberDAO {
 
 	// 마지막 로그인 시간 저장
 	void lastLogin(String mem_email, Date lastLogin) throws Exception;
-
-	// 로그인 유지 처리
+	
+		// 로그인 유지 처리
 	void keepLogin(String mem_email, String sessionid, Date sessionlimit) throws Exception;
 
 	// 세션키 검증

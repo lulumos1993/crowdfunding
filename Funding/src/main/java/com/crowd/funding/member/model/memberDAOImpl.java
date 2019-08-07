@@ -14,12 +14,24 @@ public class memberDAOImpl implements memberDAO {
 
 	@Inject
 	SqlSession sql;
+	
+	@Override
+	public void snsjoinPOST(memberDTO memDTO) throws Exception {
+		System.out.println("##### memberDAO : snsjoinPOST #####");
+		sql.insert("member.snsjoin", memDTO);
+	}
+
+	@Override
+	public memberDTO snsLogin(memberDTO mem) throws Exception {
+		System.out.println("+++++++++++++++ snsLogin +++++++++++++++++");
+		return sql.selectOne("member.snsLogin", mem.getNaver_idx());
+	}
 
 	@Override
 	public void joinPOST(memberDTO memDTO) throws Exception {
 		System.out.println("##### memberDAO : joinPOST #####");
+		
 		sql.insert("member.join", memDTO);
-		//sql.insert("member.join_email", parameter);
 	}
 
 	@Override
@@ -27,7 +39,6 @@ public class memberDAOImpl implements memberDAO {
 		System.out.println("##### memberDAO : loginPOST #####");
 		return sql.selectOne("member.login", logDTO);
 	}
-	
 	
 
 	@Override

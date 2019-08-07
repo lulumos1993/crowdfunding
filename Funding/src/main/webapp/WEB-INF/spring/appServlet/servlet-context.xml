@@ -35,6 +35,7 @@
 	
 		<interceptor>
 			<mapping path="/user/loginPOST" />
+			<mapping path="/user/navercallback" />
 			<beans:ref bean="loginIntercepter" />
 		</interceptor>
 		
@@ -73,5 +74,24 @@
 	<beans:bean class="java.lang.String" id="uploadPath">
 		<beans:constructor-arg value="C:/upload"/>	<!-- value값에 파일업로드시 저장할 폴더 경로 지정 -->
 	</beans:bean>
+	
+
+	<!-- oauth2 login -->
+	<beans:bean id="naverClientID" class="java.lang.String">
+		<beans:constructor-arg value="1ZDfw_aW8UMRLktwhsAX" />
+	</beans:bean>
+	<beans:bean id="naverClientSecret" class="java.lang.String">
+		<beans:constructor-arg value="ruu7M2wA_V" />
+	</beans:bean>
+	<beans:bean id="naverRedirectUrl" class="java.lang.String">
+		<beans:constructor-arg value="http://localhost:8080/funding/user/navercallback" />
+	</beans:bean>
+	<beans:bean id="naverSns" class="com.crowd.funding.member.SNSvalue">
+		<beans:constructor-arg value="naver"/>
+		<beans:constructor-arg ref="naverClientID" />
+		<beans:constructor-arg ref="naverClientSecret" />
+		<beans:constructor-arg ref="naverRedirectUrl" />
+	</beans:bean>
+	
 	
 </beans:beans>

@@ -20,6 +20,19 @@ public class memberServiceImpl implements memberService {
 	memberDAO memDAO;
 	@Inject
 	private JavaMailSender mailSender;
+	
+
+
+	@Override
+	public memberDTO snsLogin(memberDTO mem) throws Exception {
+		System.out.println("##### memberService : snsLogin #####");
+		return memDAO.snsLogin(mem);
+	}
+	@Override
+	public void snsjoinPOST(memberDTO memDTO) throws Exception {
+		System.out.println("##### memberService : joinPOST #####");
+		memDAO.snsjoinPOST(memDTO);
+	}
 
 	@Override
 	public void joinPOST(memberDTO memDTO) throws Exception {
@@ -78,7 +91,7 @@ public class memberServiceImpl implements memberService {
 		memDAO.keepLogin(mem_email, sessionid, sessionlimit);
 
 	}
-
+	
 	@Override
 	public memberDTO checkSessionKey(String value) throws Exception {
 		System.out.println("##### memberService : checkSessionKey #####");
@@ -120,16 +133,19 @@ public class memberServiceImpl implements memberService {
 				
 		//eamil 발송
 		MailHandler sendMail = new MailHandler(mailSender);
+		StringBuffer r = new StringBuffer();
 			sendMail.setSubject("[비밀번호 재설정 안내]");
-			sendMail.setText(new StringBuffer().append("<h1>비밀번호 변경</h1>")
+			sendMail.setText(
+					r.append("<h1>비밀번호 변경</h1>")
 					.append("<a href='http://localhost:8080/funding/user/resetpw?mem_email="+find)
 					.append("&email_key="+ email_key + "' target='_blank'>비밀번호 변경</a>")
 					.append(" 어디로 붙을까?")
-					.append("\n")
-					.append("a")
-					.append(System.getProperty("line.separator"))
+					.append("\n") 									//안됨
+					.append("a")					
+					.append(System.getProperty("line.separator"))   //안됨
 					.append("b")
-					.toString());
+					.toString()
+					);
 			sendMail.setFrom("lulumos1993@gmail.com", "페퍼민트");
 			sendMail.setTo(find);
 			sendMail.send();

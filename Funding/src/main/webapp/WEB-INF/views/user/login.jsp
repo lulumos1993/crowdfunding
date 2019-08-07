@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" session="true"%>
     
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -15,11 +15,14 @@
 	text-align: center;
 }
 </style>
+<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 <script src="<c:url value='/webjars/jquery/3.4.1/dist/jquery.min.js' />"></script>
 <script type="text/javascript">
 	var msg = "${msg}";
 	if(msg==="registered"){
 		alert("가입축하! 이메일로 인증해");
+	}else if(msg==="sns"){
+		alert("가입축하!")
 	}
 
 	$(document).ready(function() {
@@ -65,9 +68,18 @@
 	</tr>
 	<tr>
 		<th colspan="2"><a href="<c:url value='/user/userfind' />" >아이디 비밀번호 찾기</a></th>
-	<td>
+	</tr>	
 	</table>
 </form>
+
+<div id="naver_id_login" style="text-align:center">
+	<a href="${naverURL }">
+		<img width="223" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/>
+	</a>
+</div>
+
+
+
 
 </body>
 </html>
