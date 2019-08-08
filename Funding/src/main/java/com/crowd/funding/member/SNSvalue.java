@@ -6,6 +6,8 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 
 import lombok.Data;
 
+//@Getter, @Setter, @RequiredArgsConstructor, @ToString, @EqualsAndHashCode을 한꺼번에 설정
+//소스를 줄일 수 있어서 매우 유용하다.
 @Data
 public class SNSvalue implements SNSurls{
 

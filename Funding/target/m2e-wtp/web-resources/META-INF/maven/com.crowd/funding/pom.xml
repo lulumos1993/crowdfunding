@@ -230,7 +230,7 @@
 			<version>0.4</version>
 		</dependency>
 
-		<!-- naver 2.8.1 -->
+		<!-- naver -->
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-core</artifactId>

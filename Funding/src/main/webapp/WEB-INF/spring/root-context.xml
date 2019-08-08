@@ -13,6 +13,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:/dbProps/dbPool.properties</value>
+				<value>classpath:/dbProps/email.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -47,8 +48,7 @@
 	<!-- <mybatis-spring:scan base-package="com.example.spring01.model.memo" 
 		/> -->
 		
-		
-		
+	
 		
 	<!-- email -->	
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
