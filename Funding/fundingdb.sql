@@ -22,7 +22,7 @@ CREATE TABLE member
     `session_key`             VARCHAR(50)     NULL   default 'none'     COMMENT 'session 아이디 보관', 
     `session_limit`           DATETIME       NULL        COMMENT '자동로그인 유효시간 기록', 
     
-    'naver_idx'				  VARCHAR(50)     NULL        COMMENT '네이버로그인을 위한 idx', 
+    'naver_idx'				  VARCHAR(50)     NULL        COMMENT '네이버로그인을 위한 idx'
     PRIMARY KEY (mem_idx)
 );
 
